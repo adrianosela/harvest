@@ -1,26 +1,25 @@
 import React from 'react';
 import logo from './logo.svg';
+import Navigation from './components/Navigation';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+    async componentDidMount() {
+        try {
+            // TODO: Fetch user info from api using JWT if stored in `localStorage`
+            //       store info in redux
+          } catch {
+            // If token is not valid/not present redirect to landing/login page
+          }
+    }
+  
+    render() {
+      return (
+        <div className="AppContainer">
+          <Navigation />
+        </div>
+      );
+    }
 }
 
 export default App;
