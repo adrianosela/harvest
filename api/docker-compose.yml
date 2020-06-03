@@ -3,7 +3,7 @@ services:
   mongo.adrianosela.com:
     image: mongo
     environment:
-      - MONGO_INITDB_DATABASE=harvest-db
+      - MONGO_INITDB_DATABASE=mock-db
     volumes:
       - ./.mongo-seed.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
@@ -13,5 +13,9 @@ services:
     build: .
     ports:
       - 8080:80
+    environment:
+      - MONGO_DB=mock-db
+      - MONGO_USER=mock-user
+      - MONGO_PWD=mock-pwd
     depends_on:
       - mongo.adrianosela.com
