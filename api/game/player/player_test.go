@@ -3,7 +3,7 @@ package player
 import (
 	"testing"
 
-	"github.com/adrianosela/harvest/api/deck"
+	"github.com/adrianosela/harvest/api/game/deck"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

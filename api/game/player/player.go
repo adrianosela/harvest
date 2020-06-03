@@ -3,7 +3,7 @@ package player
 import (
 	"sync"
 
-	"github.com/adrianosela/harvest/api/deck"
+	"github.com/adrianosela/harvest/api/game/deck"
 )
 
 // Player represents a player in a game of harvest
