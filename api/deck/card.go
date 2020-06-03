@@ -67,7 +67,7 @@ const (
 
 var (
 	// Types represents the possible cards a player can hold
-	Types = []string{Card2, Card3, Card4, Card5, Card6, Card7, Card8, Card9, Card10, CardJ, CardQ, CardK, CardA}
+	Types = []string{CardA, Card2, Card3, Card4, Card5, Card6, Card7, Card8, Card9, Card10, CardJ, CardQ, CardK}
 	// Suits represents the possible suits a card can belong to
 	Suits = []string{SuitHeart, SuitDiamond, SuitClub, SuitSpade}
 )
@@ -85,8 +85,8 @@ func (c *Card) FlipUp() {
 	c.FaceUp = true
 }
 
-// GetValue returns the value of a given card
-func (c *Card) GetValue() int {
+// Value returns the value of a given card
+func (c *Card) Value() int {
 	switch c.Type {
 	case CardA:
 		return CardValA

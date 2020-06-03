@@ -7,7 +7,7 @@ import (
 )
 
 func TestCard(t *testing.T) {
-	Convey("GetValue Test", t, func() {
+	Convey("Value Test", t, func() {
 		tests := []struct {
 			C             Card
 			ExpectedValue int
@@ -99,7 +99,7 @@ func TestCard(t *testing.T) {
 		}
 		// run tests
 		for _, test := range tests {
-			So(test.C.GetValue(), ShouldEqual, test.ExpectedValue)
+			So(test.C.Value(), ShouldEqual, test.ExpectedValue)
 		}
 	})
 
