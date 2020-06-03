@@ -14,8 +14,16 @@ var (
 )
 
 func roomHandler(w http.ResponseWriter, r *http.Request) {
-	// FIXME: add check origin to upgrader
-	upgrader := websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 1024}
+	// TODO: session details from session token if any
+
+	upgrader := websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
