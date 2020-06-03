@@ -8,7 +8,6 @@ import (
 )
 
 func TestPlayer(t *testing.T) {
-
 	Convey("Test Compute Hand Value", t, func() {
 		p := Player{
 			PlayerID: "PlayerA",
@@ -33,9 +32,7 @@ func TestPlayer(t *testing.T) {
 				},
 			},
 		}
-
 		sum := deck.CardValA + deck.CardVal2 + deck.CardVal10 + deck.CardValJ + deck.CardVal5 + deck.CardVal7
-
 		So(p.ComputeScore(), ShouldEqual, sum)
 	})
 

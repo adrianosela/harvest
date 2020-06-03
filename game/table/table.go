@@ -24,8 +24,6 @@ var (
 
 // Table represents data about the table where the game is held
 type Table struct {
-	sync.RWMutex
-
 	ID         string                    `json:"table_id"`
 	Players    map[string]*player.Player `json:"players"`
 	Spectators int                       `json:"spectators"`

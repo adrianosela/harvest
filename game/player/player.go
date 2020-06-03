@@ -8,8 +8,6 @@ import (
 
 // Player represents a player in a game of harvest
 type Player struct {
-	sync.RWMutex
-
 	PlayerID string       `json:"player_id"`
 	Hand     [6]deck.Card `json:"hand"`
 }
