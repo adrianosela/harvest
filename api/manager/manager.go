@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"github.com/adrianosela/harvest/api/game/table"
+	"github.com/adrianosela/harvest/game/table"
 )
 
 // Manager manages a game server's state.

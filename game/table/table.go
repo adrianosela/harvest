@@ -2,7 +2,7 @@ package table
 
 import (
 	"errors"
-	"github.com/adrianosela/harvest/api/game/player"
+	"github.com/adrianosela/harvest/game/player"
 	"sync"
 )
 
