@@ -1,6 +1,5 @@
-# state
+# Harvest
 
-A state streaming server for hosting multiplayer games.
+Our spin-up of a classic card game known as [Six Card Golf](https://en.wikipedia.org/wiki/Golf_(card_game)).
 
-- HTTP API for configuration, state changes, authentication
-- UDP for streaming state 
+The back-end is written in Go. The front-end is written in React JS.
