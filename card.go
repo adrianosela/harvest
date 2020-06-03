@@ -1,4 +1,4 @@
-package deck
+package harvest
 
 const (
 	// CardValA represents the value of an Ace
@@ -77,7 +77,7 @@ type Card struct {
 	Type           string `json:"type,omitempty"`
 	Suit           string `json:"suit,omitempty"`
 	FaceUp         bool   `json:"face_up,omitempty"`
-	VisibleToOwner bool   `json:"visible_to_owner`
+	VisibleToOwner bool   `json:"visible_to_owner"`
 }
 
 // FlipUp flips a card up for every player to see it
@@ -115,6 +115,6 @@ func (c *Card) Value() int {
 	case CardK:
 		return CardValK
 	default:
-		return -1
+		return -1 // FIXME
 	}
 }

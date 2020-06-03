@@ -1,10 +1,10 @@
-package manager
+package controller
 
 import (
-	"github.com/adrianosela/harvest/game/table"
+	"github.com/adrianosela/harvest"
 )
 
-// Manager manages a game server's state.
+// Controller manages a game server's state.
 //
 // The game service architecture depends largely
 // on the implementation of this interface. e.g.:
@@ -14,13 +14,8 @@ import (
 // - if the implementation is in a database (e.g. mongoDB),
 //   then state can be shared across multiple servers
 //   and rooms are server-independent. (impl. in mongo.go)
-type Manager interface {
-	Join(player, table string) error
-	Leave(player, table string) error
-	Status() (*Status, error)
-}
-
-// Status is the state of rooms Manager
-type Status struct {
-	Tables map[string]*table.Table `json:"tables"`
+type Controller interface {
+	Join(player, game string) error
+	Leave(player, game string) error
+	Snapshot(game string) (*harvest.Game, error) // get a snapshot of an ongoing game
 }
