@@ -1,0 +1,17 @@
+version: '3'
+services:
+  mongo.adrianosela.com:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=harvest-db
+    volumes:
+      - ./.mongo-seed.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - 27017-27019:27017-27019
+  harvest.adrianosela.com:
+    image: harvest
+    build: .
+    ports:
+      - 8080:80
+    depends_on:
+      - mongo.adrianosela.com
