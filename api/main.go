@@ -14,14 +14,14 @@ var (
 	version string
 )
 
-func spectateTableHandler(w http.ResponseWriter, r *http.Request) {
+func spectateGameHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: session details from session token if any
 
-	// get table_id from request URL
-	var tableID string
-	if tableID = mux.Vars(r)["table_id"]; tableID == "" {
+	// get game_id from request URL
+	var gameID string
+	if gameID = mux.Vars(r)["game_id"]; gameID == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("no table id in request URL"))
+		w.Write([]byte("no game id in request URL"))
 		return
 	}
 
@@ -43,7 +43,7 @@ func spectateTableHandler(w http.ResponseWriter, r *http.Request) {
 
 	// subscribe websocket conn to table state
 	wsConn.WriteMessage(websocket.TextMessage,
-		[]byte(fmt.Sprintf("connected to table %s", tableID)))
+		[]byte(fmt.Sprintf("connected to game %s", gameID)))
 
 	for {
 		// FIXME
@@ -52,7 +52,7 @@ func spectateTableHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	rtr := mux.NewRouter()
-	rtr.Methods(http.MethodGet).Path("/watch/{table_id}").HandlerFunc(spectateTableHandler)
+	rtr.Methods(http.MethodGet).Path("/game/{game_id}").HandlerFunc(spectateGameHandler)
 
 	if err := http.ListenAndServe(":80", rtr); err != nil {
 		log.Fatal(err)
