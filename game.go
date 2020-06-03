@@ -10,6 +10,9 @@ const (
 
 	// MinPlayers represents the minimum number of player per game
 	MinPlayers = 2
+
+	// CardsPerPlayer represents the number of cards dealt out to each player
+	CardsPerPlayer = 6
 )
 
 var (
@@ -20,9 +23,9 @@ var (
 	ErrGameOngoing = errors.New("game is ongoing")
 )
 
-// Game represents data about a game of harvest
+// Game contains all state about a game of harvest
 type Game struct {
 	ID      string            `json:"game_id"`
-	Ongoing bool              `json:"ongoing"`
 	Players map[string]Player `json:"players"`
+	Ongoing bool              `json:"ongoing"`
 }

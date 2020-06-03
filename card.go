@@ -80,9 +80,9 @@ type Card struct {
 	VisibleToOwner bool   `json:"visible_to_owner"`
 }
 
-// FlipUp flips a card up for every player to see it
-func (c *Card) FlipUp() {
-	c.FaceUp = true
+// Flip flips a card up for every player to see it
+func (c *Card) Flip() {
+	c.FaceUp = !c.FaceUp
 }
 
 // Value returns the value of a given card

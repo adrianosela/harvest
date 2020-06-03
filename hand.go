@@ -1,7 +1,7 @@
 package harvest
 
 // Hand represents a player's hand
-type Hand [6]Card
+type Hand [CardsPerPlayer]Card
 
 // ComputeScore computes the score of a hand
 func (h *Hand) ComputeScore() int {

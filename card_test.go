@@ -33,7 +33,7 @@ func TestCard(t *testing.T) {
 		}
 	})
 
-	Convey("FlipUp Test", t, func() {
+	Convey("Flip Test", t, func() {
 		tests := []struct {
 			C                     Card
 			BeforeFlipFaceUp      bool
@@ -53,13 +53,13 @@ func TestCard(t *testing.T) {
 					FaceUp: true,
 				},
 				BeforeFlipFaceUp:      true,
-				AfterFlipExpectFaceUp: true,
+				AfterFlipExpectFaceUp: false,
 			},
 		}
 		// run tests
 		for _, test := range tests {
 			So(test.C.FaceUp, ShouldEqual, test.BeforeFlipFaceUp)
-			test.C.FlipUp()
+			test.C.Flip()
 			So(test.C.FaceUp, ShouldEqual, test.AfterFlipExpectFaceUp)
 		}
 	})
