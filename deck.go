@@ -32,7 +32,7 @@ func (d *Deck) fill() {
 	for _, val := range Types {
 		for _, suit := range Suits {
 			d.Cards = append(d.Cards, Card{
-				Type:           val,
+				Rank:           val,
 				Suit:           suit,
 				FaceUp:         false,
 				VisibleToOwner: false,

@@ -1,6 +1,36 @@
 package harvest
 
+// Rank and Suit definitions MUST match those in:
+// https://www.npmjs.com/package/react-playing-card
+
 const (
+	// CardRankA represents an Ace
+	CardRankA = "A"
+	// CardRank2 represents a Two
+	CardRank2 = "2"
+	// CardRank3 represents a Three
+	CardRank3 = "3"
+	// CardRank4 represents a Four
+	CardRank4 = "4"
+	// CardRank5 represents a Five
+	CardRank5 = "5"
+	// CardRank6 represents a Six
+	CardRank6 = "6"
+	// CardRank7 represents a Seven
+	CardRank7 = "7"
+	// CardRank8 represents an Eight
+	CardRank8 = "8"
+	// CardRank9 represents a Nine
+	CardRank9 = "9"
+	// CardRank10 represents a Ten
+	CardRank10 = "10"
+	// CardRankJ represents a Jack
+	CardRankJ = "J"
+	// CardRankQ represents a Queen
+	CardRankQ = "Q"
+	// CardRankK represents a King
+	CardRankK = "K"
+
 	// CardValA represents the value of an Ace
 	CardValA = 1
 	// CardVal2 represents the value of a Two
@@ -28,53 +58,28 @@ const (
 	// CardValK represents the value of a King
 	CardValK = 0
 
-	// CardA represents an Ace
-	CardA = "Ace"
-	// Card2 represents a Two
-	Card2 = "Two"
-	// Card3 represents a Three
-	Card3 = "Three"
-	// Card4 represents a Four
-	Card4 = "Four"
-	// Card5 represents a Five
-	Card5 = "Five"
-	// Card6 represents a Six
-	Card6 = "Six"
-	// Card7 represents a Seven
-	Card7 = "Seven"
-	// Card8 represents an Eight
-	Card8 = "Eight"
-	// Card9 represents a Nine
-	Card9 = "Nine"
-	// Card10 represents a Ten
-	Card10 = "Ten"
-	// CardJ represents a Jack
-	CardJ = "Jack"
-	// CardQ represents a Queen
-	CardQ = "Queen"
-	// CardK represents a King
-	CardK = "King"
-
-	// SuitHeart represents the Heart suit
-	SuitHeart = "Heart"
-	// SuitDiamond represents the Diamond suit
-	SuitDiamond = "Diamond"
-	// SuitClub represents the Club suit
-	SuitClub = "Club"
-	// SuitSpade represents the Spade suit
-	SuitSpade = "Spade"
+	// CardSuitHeart represents the Heart suit
+	CardSuitHeart = "H"
+	// CardSuitDiamond represents the Diamond suit
+	CardSuitDiamond = "D"
+	// CardSuitClub represents the Club suit
+	CardSuitClub = "C"
+	// CardSuitSpade represents the Spade suit
+	CardSuitSpade = "S"
 )
 
 var (
 	// Types represents the possible cards a player can hold
-	Types = []string{CardA, Card2, Card3, Card4, Card5, Card6, Card7, Card8, Card9, Card10, CardJ, CardQ, CardK}
+	Types = []string{CardRankA, CardRank2, CardRank3, CardRank4, CardRank5,
+		CardRank6, CardRank7, CardRank8, CardRank9, CardRank10,
+		CardRankJ, CardRankQ, CardRankK}
 	// Suits represents the possible suits a card can belong to
-	Suits = []string{SuitHeart, SuitDiamond, SuitClub, SuitSpade}
+	Suits = []string{CardSuitHeart, CardSuitDiamond, CardSuitClub, CardSuitSpade}
 )
 
 // Card represents the state of card of a particular type and suit
 type Card struct {
-	Type           string `json:"type,omitempty"`
+	Rank           string `json:"rank,omitempty"`
 	Suit           string `json:"suit,omitempty"`
 	FaceUp         bool   `json:"face_up,omitempty"`
 	VisibleToOwner bool   `json:"visible_to_owner"`
@@ -87,32 +92,32 @@ func (c *Card) Flip() {
 
 // Value returns the value of a given card
 func (c *Card) Value() int {
-	switch c.Type {
-	case CardA:
+	switch c.Rank {
+	case CardRankA:
 		return CardValA
-	case Card2:
+	case CardRank2:
 		return CardVal2
-	case Card3:
+	case CardRank3:
 		return CardVal3
-	case Card4:
+	case CardRank4:
 		return CardVal4
-	case Card5:
+	case CardRank5:
 		return CardVal5
-	case Card6:
+	case CardRank6:
 		return CardVal6
-	case Card7:
+	case CardRank7:
 		return CardVal7
-	case Card8:
+	case CardRank8:
 		return CardVal8
-	case Card9:
+	case CardRank9:
 		return CardVal9
-	case Card10:
+	case CardRank10:
 		return CardVal10
-	case CardJ:
+	case CardRankJ:
 		return CardValJ
-	case CardQ:
+	case CardRankQ:
 		return CardValQ
-	case CardK:
+	case CardRankK:
 		return CardValK
 	default:
 		return -1 // FIXME

@@ -12,19 +12,19 @@ func TestCard(t *testing.T) {
 			C             Card
 			ExpectedValue int
 		}{
-			{C: Card{Type: CardA}, ExpectedValue: CardValA},
-			{C: Card{Type: Card2}, ExpectedValue: CardVal2},
-			{C: Card{Type: Card3}, ExpectedValue: CardVal3},
-			{C: Card{Type: Card4}, ExpectedValue: CardVal4},
-			{C: Card{Type: Card5}, ExpectedValue: CardVal5},
-			{C: Card{Type: Card6}, ExpectedValue: CardVal6},
-			{C: Card{Type: Card7}, ExpectedValue: CardVal7},
-			{C: Card{Type: Card8}, ExpectedValue: CardVal8},
-			{C: Card{Type: Card9}, ExpectedValue: CardVal9},
-			{C: Card{Type: Card10}, ExpectedValue: CardVal10},
-			{C: Card{Type: CardJ}, ExpectedValue: CardValJ},
-			{C: Card{Type: CardQ}, ExpectedValue: CardValQ},
-			{C: Card{Type: CardK}, ExpectedValue: CardValK},
+			{C: Card{Rank: CardRankA}, ExpectedValue: CardValA},
+			{C: Card{Rank: CardRank2}, ExpectedValue: CardVal2},
+			{C: Card{Rank: CardRank3}, ExpectedValue: CardVal3},
+			{C: Card{Rank: CardRank4}, ExpectedValue: CardVal4},
+			{C: Card{Rank: CardRank5}, ExpectedValue: CardVal5},
+			{C: Card{Rank: CardRank6}, ExpectedValue: CardVal6},
+			{C: Card{Rank: CardRank7}, ExpectedValue: CardVal7},
+			{C: Card{Rank: CardRank8}, ExpectedValue: CardVal8},
+			{C: Card{Rank: CardRank9}, ExpectedValue: CardVal9},
+			{C: Card{Rank: CardRank10}, ExpectedValue: CardVal10},
+			{C: Card{Rank: CardRankJ}, ExpectedValue: CardValJ},
+			{C: Card{Rank: CardRankQ}, ExpectedValue: CardValQ},
+			{C: Card{Rank: CardRankK}, ExpectedValue: CardValK},
 			{C: Card{}, ExpectedValue: -1},
 		}
 		// run tests
@@ -41,7 +41,7 @@ func TestCard(t *testing.T) {
 		}{
 			{
 				C: Card{
-					Type:   CardA,
+					Rank:   CardRankA,
 					FaceUp: false,
 				},
 				BeforeFlipFaceUp:      false,
@@ -49,7 +49,7 @@ func TestCard(t *testing.T) {
 			},
 			{
 				C: Card{
-					Type:   Card2,
+					Rank:   CardRank2,
 					FaceUp: true,
 				},
 				BeforeFlipFaceUp:      true,
