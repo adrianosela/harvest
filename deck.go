@@ -17,9 +17,9 @@ func NewDeck() *Deck {
 	return deck
 }
 
-// NewMultiple creates a deck composed
+// NewDeckN creates a deck composed
 // of n regular 52 card decks
-func NewMultiple(n int) *Deck {
+func NewDeckN(n int) *Deck {
 	deck := &Deck{}
 	for i := 0; i < n; i++ {
 		deck.fill()
@@ -39,6 +39,13 @@ func (d *Deck) fill() {
 			})
 		}
 	}
+}
+
+// Pick removes and returns the card at the top of the deck
+func (d *Deck) Pick() Card {
+	card := d.Cards[len(d.Cards)-1]
+	d.Cards = d.Cards[:len(d.Cards)-1]
+	return card
 }
 
 // Shuffle scrambles the cards in a deck
