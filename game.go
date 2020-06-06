@@ -46,7 +46,7 @@ var (
 type Game struct {
 	ID string `json:"game_id"`
 
-	Players []Player `json:"players"`
+	Players []*Player `json:"players"`
 
 	Stack   *Deck `json:"stack"`
 	Rejects *Deck `json:"rejects"`
@@ -61,13 +61,13 @@ func NewGame() *Game {
 	return &Game{
 		ID: uuid.Must(uuid.NewV4()).String(),
 
-		Players: []Player{},
+		Players: []*Player{},
 
 		Ongoing: false,
 		Turn:    0,
 		Round:   0,
 
-		Stack:   NewDeckN(4),
+		Stack:   NewDeckN(4).Shuffle(),
 		Rejects: &Deck{},
 	}
 }
@@ -80,6 +80,7 @@ func (g *Game) Start() error {
 	if len(g.Players) < MinPlayers {
 		return ErrNotEnoughPlayers
 	}
+
 	g.deal()
 	g.Ongoing = true
 
@@ -104,6 +105,6 @@ func (g *Game) AddPlayer(id string) error {
 	if len(g.Players) >= MaxPlayers {
 		return ErrGameFull
 	}
-	g.Players = append(g.Players, Player{ID: id})
+	g.Players = append(g.Players, &Player{ID: id})
 	return nil
 }

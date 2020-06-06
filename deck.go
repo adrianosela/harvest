@@ -47,8 +47,8 @@ func (d *Deck) Pick() Card {
 	return card
 }
 
-// Shuffle scrambles the cards in a deck
-func (d *Deck) Shuffle() {
+// Shuffle scrambles the cards in a deck (in place)
+func (d *Deck) Shuffle() *Deck {
 	//seed our random functions with CPUs time
 	rand.Seed(time.Now().UnixNano())
 	for i := 1; i < len(d.Cards); i++ {
@@ -59,4 +59,5 @@ func (d *Deck) Shuffle() {
 			d.Cards[r], d.Cards[i] = d.Cards[i], d.Cards[r]
 		}
 	}
+	return d
 }
