@@ -4,8 +4,8 @@ db.createUser(
     pwd: "mock-pwd",
     roles: [
       {
-	role: "readWrite",
-	db: "mock-db"
+	      role: "readWrite",
+	      db: "mock-db"
       }
     ]
   }
