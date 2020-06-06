@@ -19,7 +19,14 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func spectateHandler(w http.ResponseWriter, r *http.Request) {
+// HTTP returns the HTTP handler for the controller
+func (c *Controller) HTTP() http.Handler {
+	r := mux.NewRouter()
+	r.Methods(http.MethodGet).Path("/game/{game_id}").HandlerFunc(c.wsHandler)
+	return r
+}
+
+func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
 	var gameID string
 	if gameID = mux.Vars(r)["game_id"]; gameID == "" {
 		http.Error(w, "no game id in request URL", http.StatusBadRequest)
