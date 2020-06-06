@@ -38,9 +38,10 @@ var (
 type Game struct {
 	ID string `json:"game_id"`
 
-	Players map[string]Player `json:"players,omitempty"`
+	Players []Player `json:"players"`
 
-	Deck *Deck `json:"deck"`
+	Stack   *Deck `json:"stack"`
+	Rejects *Deck `json:"rejects"`
 
 	Ongoing bool `json:"ongoing"`
 	Turn    int  `json:"turn"`
@@ -50,12 +51,16 @@ type Game struct {
 // NewGame returns a new game
 func NewGame() *Game {
 	return &Game{
-		ID:      uuid.Must(uuid.NewV4()).String(),
-		Players: make(map[string]Player),
-		Deck:    NewDeckN(4),
+		ID: uuid.Must(uuid.NewV4()).String(),
+
+		Players: []Player{},
+
 		Ongoing: false,
 		Turn:    0,
 		Round:   0,
+
+		Stack:   NewDeckN(4),
+		Rejects: &Deck{},
 	}
 }
 
@@ -69,20 +74,16 @@ func (g *Game) Start() error {
 	}
 	g.deal()
 	g.Ongoing = true
+
+	// TODO
+
 	return nil
 }
 
 func (g *Game) deal() {
 	for i := 0; i < CardsPerPlayer; i++ {
 		for _, player := range g.Players {
-			card := g.Deck.Pick()
-			// first half are dealt
-			// visible to the owner
-			if i < CardsPerPlayer/2 {
-				card.VisibleToOwner = true
-			}
-			// deal card
-			player.Hand[i] = card
+			player.Hand[i] = g.Stack.Pick()
 		}
 	}
 }
@@ -95,6 +96,6 @@ func (g *Game) AddPlayer(id string) error {
 	if len(g.Players) >= MaxPlayers {
 		return ErrGameFull
 	}
-	g.Players[id] = Player{}
+	g.Players = append(g.Players, Player{ID: id})
 	return nil
 }

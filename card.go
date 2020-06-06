@@ -79,10 +79,9 @@ var (
 
 // Card represents the state of card of a particular type and suit
 type Card struct {
-	Rank           string `json:"rank,omitempty"`
-	Suit           string `json:"suit,omitempty"`
-	FaceUp         bool   `json:"face_up,omitempty"`
-	VisibleToOwner bool   `json:"visible_to_owner"`
+	Rank   string `json:"rank,omitempty"`
+	Suit   string `json:"suit,omitempty"`
+	FaceUp bool   `json:"face_up,omitempty"`
 }
 
 // Flip flips a card up for every player to see it

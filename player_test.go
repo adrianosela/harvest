@@ -7,7 +7,18 @@ import (
 )
 
 func TestPlayer(t *testing.T) {
-	Convey("TODO", t, func() {
-		// 	TODO
+	Convey("Test Compute Hand Value", t, func() {
+		p := &Player{
+			Hand: [CardsPerPlayer]Card{
+				{Rank: CardRankA},
+				{Rank: CardRank2},
+				{Rank: CardRank10},
+				{Rank: CardRankJ},
+				{Rank: CardRank5},
+				{Rank: CardRank7},
+			},
+		}
+		sum := CardValA + CardVal2 + CardVal10 + CardValJ + CardVal5 + CardVal7
+		So(p.ComputeScore(), ShouldEqual, sum)
 	})
 }
