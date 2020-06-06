@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -20,8 +21,7 @@ func spectateGameHandler(w http.ResponseWriter, r *http.Request) {
 	// get game_id from request URL
 	var gameID string
 	if gameID = mux.Vars(r)["game_id"]; gameID == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("no game id in request URL"))
+		http.Error(w, "no game id in request URL", http.StatusBadRequest)
 		return
 	}
 
@@ -29,24 +29,23 @@ func spectateGameHandler(w http.ResponseWriter, r *http.Request) {
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin: func(r *http.Request) bool {
-			return true // FIXME
+			// FIXME: whitelist r.Header.Get("Origin")
+			return true
 		},
 	}
 
-	wsConn, err := upgrader.Upgrade(w, r, nil)
+	// note: the upgrade function sets the status header
+	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(fmt.Sprintf("%s", err))) // FIXME
+		w.Write([]byte(err.Error())) // propagate err
 		return
 	}
 
-	// subscribe websocket conn to table state
-	wsConn.WriteMessage(websocket.TextMessage,
-		[]byte(fmt.Sprintf("connected to game %s", gameID)))
-
 	for {
-		// FIXME
+		// send state periodically
+		ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("{ state for game %s }", gameID)))
+		time.Sleep(time.Second * 5)
 	}
 }
 
