@@ -39,6 +39,6 @@ func spectateHandler(w http.ResponseWriter, r *http.Request) {
 		ws.WriteMessage(websocket.TextMessage,
 			[]byte(fmt.Sprintf("{{ state for game %s }}", gameID)))
 
-		time.Sleep(time.Second * 5)
+		time.Sleep(time.Second * 1)
 	}
 }
