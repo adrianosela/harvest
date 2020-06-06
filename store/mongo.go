@@ -24,16 +24,18 @@ type Mongo struct {
 // NewMongo is the constructor for a Mongo type Store
 //
 // the format of the mongo connection string is:
-// mongodb://<user>:<pass>@<url>:<port>
+// mongodb://<user>:<pass>@<url>:<port>/<dbname>
 func NewMongo(connStr, db string) (*Mongo, error) {
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(connStr))
 	if err != nil {
 		return nil, err
 	}
+
 	// liveliness check
 	if err = client.Ping(context.TODO(), nil); err != nil {
 		return nil, err
 	}
+
 	return &Mongo{
 		games: client.Database(db).Collection(mongoGamesCollectionName),
 	}, nil

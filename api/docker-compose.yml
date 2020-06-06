@@ -14,7 +14,7 @@ services:
     ports:
       - 8080:80
     environment:
-      - MONGO_CONN_STR=mongodb://mock-user:mock-pwd@mongo.adrianosela.com:27017
+      - MONGO_CONN_STR=mongodb://mock-user:mock-pwd@mongo.adrianosela.com:27017/mock-db
       - MONGO_DB_NAME=mock-db
     depends_on:
       - mongo.adrianosela.com
