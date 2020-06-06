@@ -2,6 +2,7 @@ package harvest
 
 import (
 	"errors"
+	"time"
 
 	uuid "github.com/satori/go.uuid"
 )
@@ -18,6 +19,13 @@ const (
 
 	// CardsPerPlayer represents the number of cards dealt out to each player
 	CardsPerPlayer = 6
+
+	// IntermissionTime is the time before a new turn begins
+	IntermissionTime = time.Second * 3
+
+	// MaxTurnTime is the maximum time allowed for a player to make a move
+	// before the default move (flipping random board card without picking)
+	MaxTurnTime = time.Second * 20
 )
 
 var (
