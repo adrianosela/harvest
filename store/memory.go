@@ -15,6 +15,13 @@ type Memory struct {
 	games map[string]*harvest.Game
 }
 
+// NewMemory is the constructor for a Memory type Store
+func NewMemory() *Memory {
+	return &Memory{
+		games: make(map[string]*harvest.Game),
+	}
+}
+
 // Create writes a new game to the Store
 func (m *Memory) Create(game *harvest.Game) error {
 	m.Lock()
