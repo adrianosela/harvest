@@ -54,6 +54,11 @@ func (m *Mongo) Read(gameID string) (*harvest.Game, error) {
 	return &game, err
 }
 
+// Watch gets a change stream for a particular game
+func (m *Mongo) Watch(gameID string) (*mongo.ChangeStream, error) {
+	return m.games.Watch(context.TODO(), pipelineWatchGame(gameID))
+}
+
 // Update updates a game in the Store
 func (m *Mongo) Update(game *harvest.Game) error {
 	update := bson.M{
@@ -78,4 +83,8 @@ func (m *Mongo) Delete(gameID string) error {
 
 func querySingleGame(gameID string) bson.D {
 	return bson.D{{Key: mongoGamesCollectionPrimaryKey, Value: gameID}}
+}
+
+func pipelineWatchGame(gameID string) []bson.M {
+	return []bson.M{bson.M{"$match": bson.M{"_id": gameID}}}
 }
