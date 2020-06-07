@@ -42,15 +42,13 @@ func NewCustomClaims(sub, aud, iss string, lifetime time.Duration) *CustomClaims
 
 // stdClaimsToCustomClaims populates a CustomClaims struct with a given map of std claims
 func stdClaimsToCustomClaims(stdClaims *jwt.MapClaims) (*CustomClaims, error) {
-	//marshall the std claims
 	stdClaimsBytes, err := json.Marshal(stdClaims)
 	if err != nil {
 		return nil, err
 	}
-	//Unmarshal onto a CustomClaims object
+
 	var cc *CustomClaims
-	err = json.Unmarshal(stdClaimsBytes, cc)
-	if err != nil {
+	if err = json.Unmarshal(stdClaimsBytes, cc); err != nil {
 		return nil, err
 	}
 	return cc, nil

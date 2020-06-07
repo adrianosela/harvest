@@ -1,16 +1,16 @@
-package main
+package ctrl
 
 import (
 	"crypto/rand"
 	"crypto/rsa"
 
 	"github.com/adrianosela/harvest/api/auth"
+	"github.com/adrianosela/harvest/api/config"
 	"github.com/adrianosela/harvest/api/store"
 )
 
 // Controller manages the game server
 type Controller struct {
-	// TODO: authenticator
 	// TODO: rooms manager
 
 	store store.Store
@@ -18,7 +18,7 @@ type Controller struct {
 }
 
 // NewController is the Controller constructor
-func NewController(conf Config) (*Controller, error) {
+func NewController(conf config.Conf) (*Controller, error) {
 	db, err := store.NewMongo(conf.MongoDBConnStr, conf.MongoDBName)
 	if err != nil {
 		return nil, err

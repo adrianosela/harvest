@@ -1,18 +1,20 @@
-package main
+package config
 
 import (
 	"os"
 )
 
-// Config carries the api configuration
-type Config struct {
+// Conf carries the api configuration
+type Conf struct {
 	Version        string
 	MongoDBConnStr string
 	MongoDBName    string
 }
 
-func config(version string) Config {
-	c := Config{
+// FromEnv loads configuration
+// from the environment
+func FromEnv(version string) Conf {
+	c := Conf{
 		Version:        version,
 		MongoDBConnStr: os.Getenv("MONGO_CONN_STR"),
 		MongoDBName:    os.Getenv("MONGO_DB_NAME"),
