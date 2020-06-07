@@ -7,7 +7,7 @@ import (
 
 // Deck holds the cards in the deck
 type Deck struct {
-	Cards []Card `json:"cards"`
+	Cards []Card `json:"cards" bson:"cards"`
 }
 
 // NewDeck creates a deck of cards to be used

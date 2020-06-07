@@ -82,10 +82,10 @@ var (
 
 // Card represents the state of card of a particular type and suit
 type Card struct {
-	Rank         string `json:"rank,omitempty"`
-	Suit         string `json:"suit,omitempty"`
-	FaceUp       bool   `json:"face_up,omitempty"`
-	OwnerVisible bool   `json:"owner_visible,omitempty"`
+	Rank         string `json:"rank,omitempty" bson:"rank,omitempty"`
+	Suit         string `json:"suit,omitempty" bson:"suit,omitempty"`
+	FaceUp       bool   `json:"face_up,omitempty" bson:"face_up,omitempty"`
+	OwnerVisible bool   `json:"owner_visible,omitempty" bson:"owner_visible,omitempty"`
 }
 
 // Value returns the value of a given card

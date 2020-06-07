@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -33,6 +33,14 @@ func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	state, err := c.store.Read(gameID)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("game not found"))
+		return
+	}
+
 	// note: the upgrade function sets the status header
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -40,12 +48,14 @@ func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error())) // propagate err
 		return
 	}
+	defer ws.Close()
 
+	// TODO: "watch" collection on Mongo?
+	// TODO: obfuscate the state for player
+
+	stateBytes, err := json.Marshal(&state)
 	for {
-		// send state periodically
-		ws.WriteMessage(websocket.TextMessage,
-			[]byte(fmt.Sprintf("{{ state for game %s }}", gameID)))
-
+		ws.WriteMessage(websocket.TextMessage, stateBytes)
 		time.Sleep(time.Second * 1)
 	}
 }

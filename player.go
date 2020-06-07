@@ -2,8 +2,8 @@ package harvest
 
 // Player represents a player in a game of harvest.
 type Player struct {
-	ID   string               `json:"player_id"`
-	Hand [CardsPerPlayer]Card `json:"hand"`
+	ID   string               `json:"player_id" bson:"player_id"`
+	Hand [CardsPerPlayer]Card `json:"hand" bson:"hand"`
 }
 
 // ComputeScore computes a player's score

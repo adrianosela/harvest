@@ -44,16 +44,16 @@ var (
 
 // Game contains all state about a game of harvest
 type Game struct {
-	ID string `json:"game_id"`
+	ID string `json:"_id" bson:"_id,omitempty"`
 
-	Players []*Player `json:"players"`
+	Players []*Player `json:"players" bson:"players"`
 
-	Stack   *Deck `json:"stack,omitempty"`
-	Rejects *Deck `json:"rejects"`
+	Stack   *Deck `json:"stack,omitempty" bson:"stack"`
+	Rejects *Deck `json:"rejects" bson:"rejects"`
 
-	Ongoing bool `json:"ongoing"`
-	Turn    int  `json:"turn"`
-	Round   int  `json:"round"`
+	Ongoing bool `json:"ongoing" bson:"ongoing"`
+	Turn    int  `json:"turn" bson:"turn"`
+	Round   int  `json:"round" bson:"round"`
 }
 
 // NewGame returns a new game
