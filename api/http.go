@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -22,8 +23,24 @@ var upgrader = websocket.Upgrader{
 // HTTP returns the HTTP handler for the controller
 func (c *Controller) HTTP() http.Handler {
 	r := mux.NewRouter()
+	r.Methods(http.MethodGet).Path("/login").HandlerFunc(c.loginHandler)
 	r.Methods(http.MethodGet).Path("/game/{game_id}").HandlerFunc(c.wsHandler)
 	return r
+}
+
+func (c *Controller) loginHandler(w http.ResponseWriter, r *http.Request) {
+	user := "mock user" // FIXME receive credentials
+	jwt, err := c.auth.GenerateJWT(user)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("login failed"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(fmt.Sprintf("{\"token\":\"%s\"}", jwt)))
+	return
 }
 
 func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
