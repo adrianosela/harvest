@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	mongoGamesCollectionPrimaryKey = "game_id"
+	mongoGamesCollectionPrimaryKey = "_id"
 	mongoGamesCollectionName       = "games"
 )
 

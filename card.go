@@ -66,6 +66,9 @@ const (
 	CardSuitClub = "C"
 	// CardSuitSpade represents the Spade suit
 	CardSuitSpade = "S"
+
+	// used by panic in Value()
+	invalidCard = "invalid card"
 )
 
 var (
@@ -79,14 +82,10 @@ var (
 
 // Card represents the state of card of a particular type and suit
 type Card struct {
-	Rank   string `json:"rank,omitempty"`
-	Suit   string `json:"suit,omitempty"`
-	FaceUp bool   `json:"face_up,omitempty"`
-}
-
-// Flip flips a card up for every player to see it
-func (c *Card) Flip() {
-	c.FaceUp = !c.FaceUp
+	Rank         string `json:"rank,omitempty" bson:"rank,omitempty"`
+	Suit         string `json:"suit,omitempty" bson:"suit,omitempty"`
+	FaceUp       bool   `json:"face_up,omitempty" bson:"face_up,omitempty"`
+	OwnerVisible bool   `json:"owner_visible,omitempty" bson:"owner_visible,omitempty"`
 }
 
 // Value returns the value of a given card
@@ -119,6 +118,6 @@ func (c *Card) Value() int {
 	case CardRankK:
 		return CardValK
 	default:
-		return -1 // FIXME
+		panic(invalidCard)
 	}
 }

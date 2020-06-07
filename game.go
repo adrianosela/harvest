@@ -44,16 +44,16 @@ var (
 
 // Game contains all state about a game of harvest
 type Game struct {
-	ID string `json:"game_id"`
+	ID string `json:"_id" bson:"_id,omitempty"`
 
-	Players []*Player `json:"players"`
+	Players []*Player `json:"players" bson:"players"`
 
-	Stack   *Deck `json:"stack"`
-	Rejects *Deck `json:"rejects"`
+	Stack   *Deck `json:"stack,omitempty" bson:"stack"`
+	Rejects *Deck `json:"rejects" bson:"rejects"`
 
-	Ongoing bool `json:"ongoing"`
-	Turn    int  `json:"turn"`
-	Round   int  `json:"round"`
+	Ongoing bool `json:"ongoing" bson:"ongoing"`
+	Turn    int  `json:"turn" bson:"turn"`
+	Round   int  `json:"round" bson:"round"`
 }
 
 // NewGame returns a new game
@@ -67,8 +67,9 @@ func NewGame() *Game {
 		Turn:    0,
 		Round:   0,
 
-		Stack:   NewDeckN(4).Shuffle(),
-		Rejects: &Deck{},
+		Stack: NewDeckN(4).Shuffle(),
+
+		// Rejects get set by deal()
 	}
 }
 
@@ -92,9 +93,12 @@ func (g *Game) Start() error {
 func (g *Game) deal() {
 	for i := 0; i < CardsPerPlayer; i++ {
 		for _, player := range g.Players {
-			player.Hand[i] = g.Stack.Pick()
+			card := g.Stack.Pop()
+			card.OwnerVisible = (i < CardsPerPlayer/2)
+			player.Hand[i] = card
 		}
 	}
+	g.Rejects = &Deck{Cards: []Card{g.Stack.Pop()}}
 }
 
 // AddPlayer adds a player to a game
@@ -107,4 +111,41 @@ func (g *Game) AddPlayer(id string) error {
 	}
 	g.Players = append(g.Players, &Player{ID: id})
 	return nil
+}
+
+// Obfuscate takes a snapshot of a game from the perspective
+// of a given player (i.e. hides other players' cards)
+func (g *Game) Obfuscate(playerID string) *Game {
+	var copied Game
+
+	copied.ID = g.ID
+	copied.Ongoing = g.Ongoing
+
+	copied.Round = g.Round
+	copied.Turn = g.Turn
+
+	copied.Stack = nil                                      // hide stack
+	copied.Rejects = &Deck{Cards: []Card{g.Rejects.Peak()}} // show top reject
+
+	for _, player := range g.Players {
+		copiedPl := &Player{ID: player.ID}
+
+		for i, card := range player.Hand {
+			// card is facing up
+			if card.FaceUp {
+				copiedPl.Hand[i] = card
+				continue
+			}
+			// card belongs to player and is visible
+			if card.OwnerVisible && player.ID == playerID {
+				copiedPl.Hand[i] = card
+				continue
+			}
+			copiedPl.Hand[i] = Card{FaceUp: false}
+		}
+
+		copied.Players = append(copied.Players, copiedPl)
+	}
+
+	return &copied
 }

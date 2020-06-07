@@ -25,43 +25,13 @@ func TestCard(t *testing.T) {
 			{C: Card{Rank: CardRankJ}, ExpectedValue: CardValJ},
 			{C: Card{Rank: CardRankQ}, ExpectedValue: CardValQ},
 			{C: Card{Rank: CardRankK}, ExpectedValue: CardValK},
-			{C: Card{}, ExpectedValue: -1},
 		}
 		// run tests
 		for _, test := range tests {
 			So(test.C.Value(), ShouldEqual, test.ExpectedValue)
 		}
-	})
 
-	Convey("Flip Test", t, func() {
-		tests := []struct {
-			C                     Card
-			BeforeFlipFaceUp      bool
-			AfterFlipExpectFaceUp bool
-		}{
-			{
-				C: Card{
-					Rank:   CardRankA,
-					FaceUp: false,
-				},
-				BeforeFlipFaceUp:      false,
-				AfterFlipExpectFaceUp: true,
-			},
-			{
-				C: Card{
-					Rank:   CardRank2,
-					FaceUp: true,
-				},
-				BeforeFlipFaceUp:      true,
-				AfterFlipExpectFaceUp: false,
-			},
-		}
-		// run tests
-		for _, test := range tests {
-			So(test.C.FaceUp, ShouldEqual, test.BeforeFlipFaceUp)
-			test.C.Flip()
-			So(test.C.FaceUp, ShouldEqual, test.AfterFlipExpectFaceUp)
-		}
+		// test panic scenario
+		So(func() { (&Card{}).Value() }, ShouldPanicWith, invalidCard)
 	})
-
 }
