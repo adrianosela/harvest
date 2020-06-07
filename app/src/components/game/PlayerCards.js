@@ -1,18 +1,21 @@
 import React from 'react'
-import {Row} from 'react-bootstrap'
+import {Row} from 'react-bootstrap';
 import Card from './Card'
-import '../styles/OponentsCards.sass'
-class OponentsCards extends React.Component {
+
+import '../styles/PlayerContainer.sass'
+
+class PlayerCards extends React.Component {
     constructor(props) {
         super(props)
         this.renderTopRow = this.renderTopRow.bind(this)
         this.renderBottomRow = this.renderBottomRow.bind(this)
     }
+
     renderTopRow() {
         const {data} = this.props
         return data.slice(0,3).map((card, index) => {
             return (
-                <div className="playerCardsCol ml-z mr-xs">
+                <div className="deckCardsCol ml-z mr-xs">
                     <Card key={index} suit={card.suit} rank={card.rank} faceUp={true}/>
                 </div>
             )
@@ -23,7 +26,7 @@ class OponentsCards extends React.Component {
         const {data} = this.props
         return data.slice(3,6).map((card, index) => {
             return (
-                <div className="playerCardsCol ml-z mr-xs">
+                <div className="deckCardsCol ml-z mr-xs">
                     <Card key={index} suit={card.suit} rank={card.rank} faceUp={true}/>
                 </div>
             )
@@ -33,15 +36,15 @@ class OponentsCards extends React.Component {
     render() {
         return(
             <div className="">
-                <Row className="zeroMargin playerCardsRow mb-xs">
+                <Row className="zeroMargin mb-xs">
                     {this.renderTopRow()}
-                </Row>
-                <Row className="zeroMargin playerCardsRow">
+                </Row>  
+                <Row className="zeroMargin mb-xs">
                     {this.renderBottomRow()}
-                </Row>
+                </Row>  
             </div>
         )
     }
 }
 
-export default (OponentsCards)
+export default (PlayerCards)
