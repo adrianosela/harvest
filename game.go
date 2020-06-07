@@ -94,7 +94,7 @@ func (g *Game) deal() {
 	for i := 0; i < CardsPerPlayer; i++ {
 		for _, player := range g.Players {
 			card := g.Stack.Pop()
-			card.OwnerVisible = (i < CardsPerPlayer/2)
+			card.OwnerVisible = (i >= CardsPerPlayer/2)
 			player.Hand[i] = card
 		}
 	}
