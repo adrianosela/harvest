@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	mongoGamesCollectionPrimaryKey = "_id"
-	mongoGamesCollectionName       = "games"
+	mongoCollectionsPrimaryKey = "_id"
+	mongoGamesCollectionName   = "games"
 )
 
 // Mongo implements the Store
@@ -50,7 +50,7 @@ func (m *Mongo) Create(game *harvest.Game) error {
 // Read reads a game from the Store
 func (m *Mongo) Read(gameID string) (*harvest.Game, error) {
 	var game harvest.Game
-	err := m.games.FindOne(context.TODO(), querySingleGame(gameID)).Decode(&game)
+	err := m.games.FindOne(context.TODO(), querySingle(gameID)).Decode(&game)
 	return &game, err
 }
 
@@ -71,20 +71,20 @@ func (m *Mongo) Update(game *harvest.Game) error {
 			"round":   game.Round,
 		},
 	}
-	_, err := m.games.UpdateOne(context.TODO(), querySingleGame(game.ID), update)
+	_, err := m.games.UpdateOne(context.TODO(), querySingle(game.ID), update)
 	return err
 }
 
 // Delete deletes a game from the Store
 func (m *Mongo) Delete(gameID string) error {
-	_, err := m.games.DeleteOne(context.TODO(), querySingleGame(gameID))
+	_, err := m.games.DeleteOne(context.TODO(), querySingle(gameID))
 	return err
 }
 
-func querySingleGame(gameID string) bson.D {
-	return bson.D{{Key: mongoGamesCollectionPrimaryKey, Value: gameID}}
+func querySingle(id string) bson.D {
+	return bson.D{{Key: mongoCollectionsPrimaryKey, Value: id}}
 }
 
 func pipelineWatchGame(gameID string) []bson.M {
-	return []bson.M{bson.M{"$match": bson.M{"_id": gameID}}}
+	return []bson.M{{"$match": bson.M{"_id": gameID}}}
 }
