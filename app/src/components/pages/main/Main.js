@@ -1,5 +1,6 @@
 import React from 'react'
 import { w3cwebsocket as ws } from "websocket";
+import GameBoard from '../../game/GameBoard';
 
 const client = new ws('ws://localhost:8080/game/MOCK_ID');
 
@@ -19,7 +20,7 @@ class Main extends React.Component {
     render() {
         return(
             <div>
-                Open the Console to see WS Messages
+                <GameBoard />
             </div>
         );
     }

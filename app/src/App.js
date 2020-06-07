@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import Navigation from './components/Navigation';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 class App extends React.Component {
