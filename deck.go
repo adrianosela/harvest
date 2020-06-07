@@ -40,11 +40,16 @@ func (d *Deck) fill() {
 	}
 }
 
-// Pick removes and returns the card at the top of the deck
-func (d *Deck) Pick() Card {
+// Pop removes and returns the card at the top of the deck
+func (d *Deck) Pop() Card {
 	card := d.Cards[len(d.Cards)-1]
 	d.Cards = d.Cards[:len(d.Cards)-1]
 	return card
+}
+
+// Peak returns the card at the top of the deck without removing it
+func (d *Deck) Peak() Card {
+	return d.Cards[len(d.Cards)-1]
 }
 
 // Shuffle scrambles the cards in a deck (in place)
