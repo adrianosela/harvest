@@ -30,7 +30,7 @@ func (c *Controller) Handler() http.Handler {
 
 	// game state
 	r.Methods(http.MethodGet).Path("/game/{game_id}/snapshot").Handler(c.auth.Wrap(c.snapshotHandler))
-	r.Methods(http.MethodGet).Path("/game/{game_id}/watch").HandlerFunc(c.wsHandler)
+	r.Methods(http.MethodGet).Path("/game/{game_id}/watch").Handler(c.auth.Wrap(c.wsHandler))
 
 	return r
 }
@@ -42,12 +42,14 @@ func (c *Controller) loginHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(errStr)
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(errStr))
+		return
 	}
 
 	if err := c.auth.Basic(user, pwd); err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	jwt, err := c.auth.GenerateJWT(user)
@@ -66,7 +68,9 @@ func (c *Controller) loginHandler(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
 	var gameID string
 	if gameID = mux.Vars(r)["game_id"]; gameID == "" {
-		http.Error(w, "no game id in request URL", http.StatusBadRequest)
+		errStr := "no game id in request URL"
+		log.Println(errStr)
+		http.Error(w, errStr, http.StatusBadRequest)
 		return
 	}
 
