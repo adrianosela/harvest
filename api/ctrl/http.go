@@ -30,7 +30,7 @@ func (c *Controller) Handler() http.Handler {
 
 	// game state
 	r.Methods(http.MethodGet).Path("/game/{game_id}/snapshot").Handler(c.auth.Wrap(c.snapshotHandler))
-	r.Methods(http.MethodGet).Path("/game/{game_id}/watch").Handler(c.auth.Wrap(c.wsHandler))
+	r.Methods(http.MethodGet).Path("/game/{game_id}/watch").HandlerFunc(c.wsHandler)
 
 	return r
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { w3cwebsocket as ws } from "websocket";
 import GameBoard from '../../game/GameBoard';
 
-const client = new ws('ws://localhost:8080/game/MOCK_ID');
+const client = new ws('ws://localhost:8080/game/MOCK_ID/watch');
 
 class Main extends React.Component {
     componentWillMount() {
