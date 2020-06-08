@@ -3,6 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/adrianosela/harvest/api/config"
+	"github.com/adrianosela/harvest/api/ctrl"
 )
 
 var (
@@ -11,12 +14,11 @@ var (
 )
 
 func main() {
-	ctrl, err := NewController(config(version))
+	ctrl, err := ctrl.NewController(config.FromEnv(version))
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	if err := http.ListenAndServe(":80", ctrl.HTTP()); err != nil {
+	if err := http.ListenAndServe(":80", ctrl.Handler()); err != nil {
 		log.Fatal(err)
 	}
 }

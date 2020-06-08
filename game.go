@@ -51,25 +51,19 @@ type Game struct {
 	Stack   *Deck `json:"stack,omitempty" bson:"stack"`
 	Rejects *Deck `json:"rejects" bson:"rejects"`
 
-	Ongoing bool `json:"ongoing" bson:"ongoing"`
-	Turn    int  `json:"turn" bson:"turn"`
-	Round   int  `json:"round" bson:"round"`
+	Ongoing  bool       `json:"ongoing" bson:"ongoing"`
+	Turn     int        `json:"turn" bson:"turn"`
+	TurnEnds *time.Time `json:"turn_ends,omitempty" bson:"turn_ends,omitempty"`
+	Round    int        `json:"round" bson:"round"`
 }
 
-// NewGame returns a new game
+// NewGame returns a new game with no
+// players, no rejects, and a new deck
 func NewGame() *Game {
 	return &Game{
-		ID: uuid.Must(uuid.NewV4()).String(),
-
+		ID:      uuid.Must(uuid.NewV4()).String(),
 		Players: []*Player{},
-
-		Ongoing: false,
-		Turn:    0,
-		Round:   0,
-
-		Stack: NewDeckN(4).Shuffle(),
-
-		// Rejects get set by deal()
+		Stack:   NewDeckN(4).Shuffle(),
 	}
 }
 
@@ -113,9 +107,10 @@ func (g *Game) AddPlayer(id string) error {
 	return nil
 }
 
-// Obfuscate takes a snapshot of a game from the perspective
-// of a given player (i.e. hides other players' cards)
-func (g *Game) Obfuscate(playerID string) *Game {
+// Snapshot takes a copy of the state of the Game
+// from the perspective of a given player id
+// i.e. hides other players' cards, etc
+func (g *Game) Snapshot(requester string) *Game {
 	var copied Game
 
 	copied.ID = g.ID
@@ -137,7 +132,7 @@ func (g *Game) Obfuscate(playerID string) *Game {
 				continue
 			}
 			// card belongs to player and is visible
-			if card.OwnerVisible && player.ID == playerID {
+			if card.OwnerVisible && player.ID == requester {
 				copiedPl.Hand[i] = card
 				continue
 			}
