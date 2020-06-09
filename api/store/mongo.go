@@ -58,26 +58,22 @@ func (m *Mongo) GetGame(gameID string) (*harvest.Game, error) {
 // ListGames gets a list of games from the db
 func (m *Mongo) ListGames(opts *harvest.ListOpts) ([]*harvest.Game, error) {
 
-	filter := []bson.M{}
+	matches := bson.M{}
 
 	if opts != nil {
-		if opts.ExcludeFull {
-			filter = append(filter, bson.M{
-				"$where": fmt.Sprintf("this.players.length < %d", harvest.MaxPlayers),
-			})
-		}
-
 		matches := bson.M{}
+		if opts.ExcludeFull {
+			matches["$where"] = fmt.Sprintf("this.players.length < %d", harvest.MaxPlayers)
+		}
 		if opts.ExcludeStarted {
 			matches["started"] = false
 		}
 		if opts.ExcludeEnded {
 			matches["ended"] = false
 		}
-		filter = append(filter, bson.M{"$match": matches})
 	}
 
-	cur, err := m.games.Find(context.TODO(), filter)
+	cur, err := m.games.Find(context.TODO(), matches)
 	if err != nil {
 		return nil, err
 	}

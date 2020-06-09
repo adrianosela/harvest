@@ -35,7 +35,7 @@ func (c *Controller) listGamesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var lgr listGamesResponse
+	lgr := listGamesResponse{Games: make(map[string]seatsAvailable)}
 	for _, game := range list {
 		lgr.Games[game.ID] = seatsAvailable{
 			SeatsAvailable: harvest.MaxPlayers - len(game.Players),
