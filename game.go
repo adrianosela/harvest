@@ -119,8 +119,12 @@ func (g *Game) Snapshot(requester string) *Game {
 	copied.Round = g.Round
 	copied.Turn = g.Turn
 
-	copied.Stack = nil                                      // hide stack
-	copied.Rejects = &Deck{Cards: []Card{g.Rejects.Peak()}} // show top reject
+	copied.Stack = nil
+	copied.Rejects = nil
+
+	if g.Rejects != nil && len(g.Rejects.Cards) > 0 {
+		copied.Rejects = &Deck{Cards: []Card{g.Rejects.Peak()}}
+	}
 
 	for _, player := range g.Players {
 		copiedPl := &Player{ID: player.ID}

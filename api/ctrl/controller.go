@@ -3,7 +3,9 @@ package ctrl
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"log"
 
+	"github.com/adrianosela/harvest"
 	"github.com/adrianosela/harvest/api/auth"
 	"github.com/adrianosela/harvest/api/config"
 	"github.com/adrianosela/harvest/api/store"
@@ -28,6 +30,15 @@ func NewController(conf config.Conf) (*Controller, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// FIXME: mock game id
+	g := harvest.NewGame()
+	g.AddPlayer("MOCK_PLAYER_1")
+	g.AddPlayer("MOCK_PLAYER_2")
+	g.AddPlayer("MOCK_PLAYER_3")
+	g.AddPlayer("MOCK_PLAYER_4")
+	db.Create(g)
+	log.Printf("created mock game %s", g.ID)
 
 	return &Controller{
 		store: db,
