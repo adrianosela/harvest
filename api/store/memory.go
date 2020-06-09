@@ -22,8 +22,8 @@ func NewMemory() *Memory {
 	}
 }
 
-// Create writes a new game to the Store
-func (m *Memory) Create(game *harvest.Game) error {
+// CreateGame writes a new game to the Store
+func (m *Memory) CreateGame(game *harvest.Game) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -34,8 +34,8 @@ func (m *Memory) Create(game *harvest.Game) error {
 	return nil
 }
 
-// Read reads a game from the Store
-func (m *Memory) Read(gameID string) (*harvest.Game, error) {
+// GetGame reads a game from the Store
+func (m *Memory) GetGame(gameID string) (*harvest.Game, error) {
 	m.RLock()
 	defer m.RUnlock()
 
@@ -45,8 +45,8 @@ func (m *Memory) Read(gameID string) (*harvest.Game, error) {
 	return nil, fmt.Errorf("game %s not in store", gameID)
 }
 
-// Update updates a game in the Store
-func (m *Memory) Update(game *harvest.Game) error {
+// UpdateGame updates a game in the Store
+func (m *Memory) UpdateGame(game *harvest.Game) error {
 	m.Lock()
 	defer m.Unlock()
 
@@ -57,11 +57,17 @@ func (m *Memory) Update(game *harvest.Game) error {
 	return nil
 }
 
-// Delete deletes a game from the Store
-func (m *Memory) Delete(gameID string) error {
+// DeleteGame deletes a game from the Store
+func (m *Memory) DeleteGame(gameID string) error {
 	m.Lock()
 	defer m.Unlock()
 
 	delete(m.games, gameID)
 	return nil
+}
+
+// WatchGame builds an iterator with a blocking
+// function for updates on a game's state
+func (m *Memory) WatchGame(gameID string) (harvest.UpdateStream, error) {
+	return nil, nil // TODO
 }
