@@ -1,5 +1,4 @@
 import React from 'react'
-import { w3cwebsocket as ws } from "websocket";
 import GameBoard from '../../game/GameBoard';
 
 class Main extends React.Component {
