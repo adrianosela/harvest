@@ -1,18 +1,9 @@
 package ctrl
 
 import (
-	"net/http"
-
 	"github.com/gorilla/mux"
+	"net/http"
 )
-
-// cors enabling middleware
-func cors(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		h.ServeHTTP(w, r)
-	})
-}
 
 // Router returns the HTTP routes handler
 func (c *Controller) Router() http.Handler {
