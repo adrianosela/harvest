@@ -5,14 +5,32 @@ const injectTokenHeader = (headers) => {
     const token = getToken()
     return {
         ...headers,
-        Authorization: `Bearer ${token}`,
+        Authorization: headers.Authorization ? headers.Authorization : `Bearer ${token}`,
         Accept: 'application/json'
     }
 }
 
 export const ApiService = {
 
-    baseUrl: process.env.API_ENDPOINT || 'http://localhost:80',
+    baseUrl: process.env.API_ENDPOINT || 'http://localhost:8080',
+    wsBaseUrl: 'ws://localhost:8080',
+
+    wsConnect: async function(gameId, token) {
+        token = token || getToken() // FIXME: Remove mock token fallback
+        const wsURL = `${this.wsBaseUrl}/game/${gameId}/watch?token=${token}`
+        const ws = new WebSocket(wsURL);
+        ws.onopen = () => {
+	        console.log('connected');
+	    };
+
+	    ws.onmessage = (msg) => {
+	        console.log(msg.data); // FIXME: what we sending -- state or moves?
+	    };
+
+	    ws.onclose = () => {
+            console.log('disconnected');
+	    };
+    },
 
     get: async function(path, page, payload, headers) {
         const fullHeaders = injectTokenHeader({
@@ -34,13 +52,6 @@ export const ApiService = {
             'Content-Type': 'application/json'
         })
         const { data } = await axios.post(this.baseUrl + path, payload, { headers: fullHeaders })
-        if (data['success'] === false) {
-            if (errors.find(e => e === data['error']) === undefined){
-                throw new Error(data['error'])
-            }
-            // How to handle failed api calls?
-            // check error status code? see if its unauthorized, bad, request, etc   
-        }
         return data
 
     },
@@ -68,13 +79,6 @@ export const ApiService = {
             'Content-Type': 'application/json'
         })
         const { data } = await axios.patch(this.baseUrl + path, payload, { headers: fullHeaders })
-        if (data['success'] === false) {
-            if (errors.find(e => e === data['error']) === undefined){
-                throw new Error(data['error'])
-            }
-            // How to handle failed api calls?
-            // check error status code? see if its unauthorized, bad, request, etc   
-        }
         return data
     }
 }
