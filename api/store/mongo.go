@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/adrianosela/harvest"
 
@@ -41,20 +42,63 @@ func NewMongo(connStr, db string) (*Mongo, error) {
 	}, nil
 }
 
-// CreateGame writes a new game to the Store
+// CreateGame writes a new game to the db
 func (m *Mongo) CreateGame(game *harvest.Game) error {
 	_, err := m.games.InsertOne(context.TODO(), game)
 	return err
 }
 
-// GetGame reads a game from the Store
+// GetGame reads a game from the db
 func (m *Mongo) GetGame(gameID string) (*harvest.Game, error) {
 	var game harvest.Game
 	err := m.games.FindOne(context.TODO(), querySingle(gameID)).Decode(&game)
 	return &game, err
 }
 
-// UpdateGame updates a game in the Store
+// ListGames gets a list of games from the db
+func (m *Mongo) ListGames(opts *harvest.ListOpts) ([]*harvest.Game, error) {
+
+	filter := []bson.M{}
+
+	if opts != nil {
+		if opts.ExcludeFull {
+			filter = append(filter, bson.M{
+				"$where": fmt.Sprintf("this.players.length < %d", harvest.MaxPlayers),
+			})
+		}
+
+		matches := bson.M{}
+		if opts.ExcludeStarted {
+			matches["started"] = false
+		}
+		if opts.ExcludeEnded {
+			matches["ended"] = false
+		}
+		filter = append(filter, bson.M{"$match": matches})
+	}
+
+	cur, err := m.games.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+
+	games := []*harvest.Game{}
+	for cur.Next(context.TODO()) {
+		var game harvest.Game
+		err := cur.Decode(&game)
+		if err == nil {
+			games = append(games, &game)
+		}
+	}
+
+	if err := cur.Err(); err != nil {
+		return nil, err
+	}
+
+	return games, nil
+}
+
+// UpdateGame updates a game in the db
 func (m *Mongo) UpdateGame(game *harvest.Game) error {
 	update := bson.M{
 		"$set": bson.M{
@@ -74,7 +118,7 @@ func (m *Mongo) UpdateGame(game *harvest.Game) error {
 	return err
 }
 
-// DeleteGame deletes a game from the Store
+// DeleteGame deletes a game from the db
 func (m *Mongo) DeleteGame(gameID string) error {
 	_, err := m.games.DeleteOne(context.TODO(), querySingle(gameID))
 	return err

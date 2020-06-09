@@ -9,12 +9,22 @@ type DB interface {
 	CreateGame(*Game) error
 	// get a snapshot of the game's state
 	GetGame(string) (*Game, error)
+	// list all games and apply certain filters
+	ListGames(*ListOpts) ([]*Game, error)
 	// update a game's'state
 	UpdateGame(*Game) error
 	// delete a game's state
 	DeleteGame(string) error
 	// subscribe to a game's state updates
 	WatchGame(string) (UpdateStream, error)
+}
+
+// ListOpts represents applicable filters
+// when querying the db for a list of games
+type ListOpts struct {
+	ExcludeStarted bool
+	ExcludeEnded   bool
+	ExcludeFull    bool
 }
 
 // UpdateStream represents an iterator-like

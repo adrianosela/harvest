@@ -45,6 +45,28 @@ func (m *Memory) GetGame(gameID string) (*harvest.Game, error) {
 	return nil, fmt.Errorf("game %s not in store", gameID)
 }
 
+// ListGames gets a list of games from the db
+func (m *Memory) ListGames(opts *harvest.ListOpts) ([]*harvest.Game, error) {
+	games := []*harvest.Game{}
+
+	for _, game := range m.games {
+		if opts != nil {
+			if opts.ExcludeStarted && game.Started {
+				continue
+			}
+			if opts.ExcludeEnded && game.Ended {
+				continue
+			}
+			if opts.ExcludeFull && len(game.Players) >= harvest.MaxPlayers {
+				continue
+			}
+		}
+		games = append(games, game)
+	}
+
+	return games, nil
+}
+
 // UpdateGame updates a game in the Store
 func (m *Memory) UpdateGame(game *harvest.Game) error {
 	m.Lock()
