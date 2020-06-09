@@ -2,6 +2,7 @@ package ctrl
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -55,8 +56,45 @@ func (c *Controller) listGamesHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// adds the player to a game
+func (c *Controller) joinGameHandler(w http.ResponseWriter, r *http.Request) {
+	claims := auth.GetClaims(r)
+
+	var gameID string
+	if gameID = mux.Vars(r)["game_id"]; gameID == "" {
+		http.Error(w, "no game id in request URL", http.StatusBadRequest)
+		return
+	}
+
+	state, err := c.games.GetGame(gameID)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("game not found"))
+		return
+	}
+
+	if err = state.AddPlayer(claims.Subject); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(fmt.Sprintf("could not add player to game: %s", err.Error())))
+		return
+	}
+
+	if err = c.games.UpdateGame(state); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError) // should rarely happen
+		w.Write([]byte(fmt.Sprintf("could not add update game: %s", err.Error())))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(fmt.Sprintf("player %s joined game %s", claims.Subject, gameID)))
+	return
+}
+
 // takes a snapshot of a game from the perspective of a given player
-func (c *Controller) snapshotHandler(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) stateHandler(w http.ResponseWriter, r *http.Request) {
 	claims := auth.GetClaims(r)
 
 	var gameID string
