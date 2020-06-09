@@ -15,7 +15,7 @@ import (
 type Controller struct {
 	// TODO: rooms manager
 
-	store store.Store
+	games harvest.DB
 	auth  *auth.Authenticator
 }
 
@@ -37,11 +37,11 @@ func NewController(conf config.Conf) (*Controller, error) {
 	g.AddPlayer("MOCK_PLAYER_2")
 	g.AddPlayer("MOCK_PLAYER_3")
 	g.AddPlayer("MOCK_PLAYER_4")
-	db.Create(g)
+	db.CreateGame(g)
 	log.Printf("created mock game %s", g.ID)
 
 	return &Controller{
-		store: db,
+		games: db,
 		auth:  auth.NewAuthenticator(db, priv, "harvest.adrianosela.com", "api"),
 	}, nil
 }

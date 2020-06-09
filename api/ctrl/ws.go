@@ -32,7 +32,7 @@ func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	state, err := c.store.Read(gameID)
+	state, err := c.games.GetGame(gameID)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusNotFound)
