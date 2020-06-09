@@ -35,8 +35,8 @@ var (
 	// ErrNotEnoughPlayers occurs when there aren't enough players for a game
 	ErrNotEnoughPlayers = errors.New("not enough players")
 
-	// ErrGameOngoing occurs when trying to add a player to an ongoing game
-	ErrGameOngoing = errors.New("game is ongoing")
+	// ErrGameStarted occurs when trying to add a player to started game
+	ErrGameStarted = errors.New("game started")
 
 	// ErrNotInGame occurs when trying to deactivate a player not in the game
 	ErrNotInGame = errors.New("player not in game")
@@ -44,17 +44,22 @@ var (
 
 // Game contains all state about a game of harvest
 type Game struct {
-	ID string `json:"_id" bson:"_id,omitempty"`
-
+	ID      string    `json:"_id" bson:"_id"`
 	Players []*Player `json:"players" bson:"players"`
 
 	Stack   *Deck `json:"stack,omitempty" bson:"stack"`
 	Rejects *Deck `json:"rejects" bson:"rejects"`
 
-	Ongoing  bool       `json:"ongoing" bson:"ongoing"`
-	Turn     int        `json:"turn" bson:"turn"`
-	TurnEnds *time.Time `json:"turn_ends,omitempty" bson:"turn_ends,omitempty"`
-	Round    int        `json:"round" bson:"round"`
+	Turn  int `json:"turn" bson:"turn"`
+	Round int `json:"round" bson:"round"`
+
+	Started   bool      `json:"started" bson:"ongoing"`
+	StartedAt time.Time `json:"started_at" bson:"started_at"`
+
+	Ended   bool
+	EndedAt time.Time
+
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 // NewGame returns a new game with no
@@ -69,18 +74,16 @@ func NewGame() *Game {
 
 // Start kicks off the round and turn timer
 func (g *Game) Start() error {
-	if g.Ongoing {
-		return ErrGameOngoing
+	if g.Started {
+		return ErrGameStarted
 	}
 	if len(g.Players) < MinPlayers {
 		return ErrNotEnoughPlayers
 	}
-
 	g.deal()
-	g.Ongoing = true
 
-	// TODO
-
+	timestamp := time.Now()
+	g.Started, g.StartedAt, g.UpdatedAt = true, timestamp, timestamp
 	return nil
 }
 
@@ -97,13 +100,14 @@ func (g *Game) deal() {
 
 // AddPlayer adds a player to a game
 func (g *Game) AddPlayer(id string) error {
-	if g.Ongoing {
-		return ErrGameOngoing
+	if g.Started {
+		return ErrGameStarted
 	}
 	if len(g.Players) >= MaxPlayers {
 		return ErrGameFull
 	}
 	g.Players = append(g.Players, &Player{ID: id})
+	g.UpdatedAt = time.Now()
 	return nil
 }
 
@@ -111,40 +115,48 @@ func (g *Game) AddPlayer(id string) error {
 // from the perspective of a given player id
 // i.e. hides other players' cards, etc
 func (g *Game) Snapshot(requester string) *Game {
-	var copied Game
-
-	copied.ID = g.ID
-	copied.Ongoing = g.Ongoing
-
-	copied.Round = g.Round
-	copied.Turn = g.Turn
-
-	copied.Stack = nil
-	copied.Rejects = nil
+	var rejects *Deck
 
 	if g.Rejects != nil && len(g.Rejects.Cards) > 0 {
-		copied.Rejects = &Deck{Cards: []Card{g.Rejects.Peak()}}
+		rejects = &Deck{Cards: []Card{g.Rejects.Peak()}}
 	}
 
+	return &Game{
+		ID:        g.ID,
+		Players:   g.hideCards(requester),
+		Started:   g.Started,
+		StartedAt: g.StartedAt,
+		Ended:     g.Ended,
+		EndedAt:   g.EndedAt,
+		UpdatedAt: g.UpdatedAt,
+		Turn:      g.Turn,
+		Round:     g.Round,
+		Stack:     nil,
+		Rejects:   rejects,
+	}
+}
+
+func (g *Game) hideCards(requester string) []*Player {
+	var players []*Player
 	for _, player := range g.Players {
-		copiedPl := &Player{ID: player.ID}
+		pl := &Player{ID: player.ID}
 
 		for i, card := range player.Hand {
 			// card is facing up
 			if card.FaceUp {
-				copiedPl.Hand[i] = card
+				pl.Hand[i] = card
 				continue
 			}
 			// card belongs to player and is visible
 			if card.OwnerVisible && player.ID == requester {
-				copiedPl.Hand[i] = card
+				pl.Hand[i] = card
 				continue
 			}
-			copiedPl.Hand[i] = Card{FaceUp: false}
+			pl.Hand[i] = Card{FaceUp: false}
 		}
 
-		copied.Players = append(copied.Players, copiedPl)
+		players = append(players, pl)
 	}
 
-	return &copied
+	return players
 }
