@@ -32,7 +32,6 @@ func NewController(conf config.Conf) (*Controller, error) {
 	}
 
 	for i := 0; i < 5; i++ {
-		// FIXME: mock game id
 		g := harvest.NewGame()
 		g.AddPlayer("MOCK_PLAYER_1")
 		g.AddPlayer("MOCK_PLAYER_2")
