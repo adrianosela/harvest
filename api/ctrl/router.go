@@ -13,13 +13,12 @@ func (c *Controller) Router() http.Handler {
 	// auth
 	r.Methods(http.MethodGet).Path("/login").HandlerFunc(c.loginHandler)
 
-	// player operations
+	// game operations operations
 	r.Methods(http.MethodGet).Path("/games").Handler(c.auth.Wrap(c.listGamesHandler))
-	r.Methods(http.MethodGet).Path("/game/{game_id}/state").Handler(c.auth.Wrap(c.stateHandler))
+	r.Methods(http.MethodGet).Path("/game/{game_id}/snapshot").Handler(c.auth.Wrap(c.snapshotGameHandler))
 	r.Methods(http.MethodGet).Path("/game/{game_id}/join").Handler(c.auth.Wrap(c.joinGameHandler))
-
-	// spectator operations
-	r.Methods(http.MethodGet).Path("/game/{game_id}/watch").Handler(c.auth.Wrap(c.wsHandler))
+	r.Methods(http.MethodGet).Path("/game/{game_id}/leave").Handler(c.auth.Wrap(c.leaveGameHandler))
+	r.Methods(http.MethodGet).Path("/game/{game_id}/watch").Handler(c.auth.Wrap(c.watchGameHandler))
 
 	return cors(r) // enable cors
 }

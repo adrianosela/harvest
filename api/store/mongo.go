@@ -121,8 +121,8 @@ func (m *Mongo) DeleteGame(gameID string) error {
 }
 
 // WatchGame gets a change stream for a particular game
-func (m *Mongo) WatchGame(gameID string) (harvest.UpdateStream, error) {
-	return m.games.Watch(context.TODO(), pipelineWatchGame(gameID))
+func (m *Mongo) WatchGame(ctx context.Context, gameID string) (harvest.UpdateStream, error) {
+	return m.games.Watch(ctx, pipelineWatchGame(gameID))
 }
 
 func querySingle(id string) bson.D {

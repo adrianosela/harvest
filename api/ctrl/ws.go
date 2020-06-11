@@ -1,11 +1,12 @@
 package ctrl
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 
+	"github.com/adrianosela/harvest"
 	"github.com/adrianosela/harvest/api/auth"
 	"github.com/adrianosela/harvest/api/msg"
 	"github.com/gorilla/mux"
@@ -21,7 +22,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) watchGameHandler(w http.ResponseWriter, r *http.Request) {
 	claims := auth.GetClaims(r)
 
 	var gameID string
@@ -32,16 +33,6 @@ func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	state, err := c.games.GetGame(gameID)
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("game not found"))
-		return
-	}
-
-	snap := state.Snapshot(claims.Subject)
-
 	ws, err := upgrader.Upgrade(w, r, nil) // note: sets HTTP header on fail
 	if err != nil {
 		log.Println(err)
@@ -50,17 +41,23 @@ func (c *Controller) wsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
-	message, _ := json.Marshal(&msg.Message{Type: "STATE", Args: snap})
-	ws.WriteMessage(websocket.TextMessage, message)
+	ctx := context.Background()
+	cs, err := c.games.WatchGame(ctx, gameID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer cs.Close(ctx)
 
-	message, _ = json.Marshal(&msg.Message{Type: "MOCK",
-		Args: map[string]string{
-			"arg1": "val1",
-			"arg2": "val2",
-		}})
+	for cs.Next(ctx) {
+		var game *harvest.Game
+		if err := cs.Decode(&game); err != nil {
+			log.Println(err)
+			return
+		}
 
-	for {
+		game.PlayerView(claims.Subject)
+		message, _ := json.Marshal(&msg.Message{Type: msg.TypeState, Args: game})
 		ws.WriteMessage(websocket.TextMessage, message)
-		time.Sleep(time.Second * 1)
 	}
 }

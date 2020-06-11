@@ -38,8 +38,11 @@ var (
 	// ErrGameStarted occurs when trying to add a player to started game
 	ErrGameStarted = errors.New("game started")
 
-	// ErrNotInGame occurs when trying to deactivate a player not in the game
-	ErrNotInGame = errors.New("player not in game")
+	// ErrPlayerInGame occurs when trying to add a player already in a game
+	ErrPlayerInGame = errors.New("player in game")
+
+	// ErrPlayerNotInGame occurs when trying to access a player not in a game
+	ErrPlayerNotInGame = errors.New("player not in game")
 )
 
 // Game contains all state about a game of harvest
@@ -81,7 +84,6 @@ func (g *Game) Start() error {
 		return ErrNotEnoughPlayers
 	}
 	g.deal()
-
 	timestamp := time.Now()
 	g.Started, g.StartedAt, g.UpdatedAt = true, timestamp, timestamp
 	return nil
@@ -106,15 +108,34 @@ func (g *Game) AddPlayer(id string) error {
 	if len(g.Players) >= MaxPlayers {
 		return ErrGameFull
 	}
+	for _, pl := range g.Players {
+		if pl.ID == id {
+			return ErrPlayerInGame
+		}
+	}
 	g.Players = append(g.Players, &Player{ID: id})
 	g.UpdatedAt = time.Now()
 	return nil
 }
 
-// Snapshot takes a copy of the state of the Game
+// RemovePlayer removes a player from a game
+func (g *Game) RemovePlayer(id string) error {
+	var updated []*Player
+	for _, pl := range g.Players {
+		if pl.ID == id {
+			continue
+		}
+		updated = append(updated, pl)
+	}
+	g.Players = updated
+	g.UpdatedAt = time.Now()
+	return nil
+}
+
+// PlayerView takes a copy of the state of the Game
 // from the perspective of a given player id
 // i.e. hides other players' cards, etc
-func (g *Game) Snapshot(requester string) *Game {
+func (g *Game) PlayerView(requester string) *Game {
 	var rejects *Deck
 
 	if g.Rejects != nil && len(g.Rejects.Cards) > 0 {

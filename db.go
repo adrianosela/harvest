@@ -16,7 +16,7 @@ type DB interface {
 	// delete a game's state
 	DeleteGame(string) error
 	// subscribe to a game's state updates
-	WatchGame(string) (UpdateStream, error)
+	WatchGame(context.Context, string) (UpdateStream, error)
 }
 
 // ListOpts represents applicable filters
@@ -32,4 +32,6 @@ type ListOpts struct {
 // for updates on a game's state
 type UpdateStream interface {
 	Next(context.Context) bool
+	Close(context.Context) error
+	Decode(interface{}) error
 }

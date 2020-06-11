@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
@@ -90,6 +91,6 @@ func (m *Memory) DeleteGame(gameID string) error {
 
 // WatchGame builds an iterator with a blocking
 // function for updates on a game's state
-func (m *Memory) WatchGame(gameID string) (harvest.UpdateStream, error) {
+func (m *Memory) WatchGame(ctx context.Context, gameID string) (harvest.UpdateStream, error) {
 	return nil, nil // TODO
 }

@@ -33,8 +33,7 @@ func NewController(conf config.Conf) (*Controller, error) {
 
 	for i := 0; i < 5; i++ {
 		g := harvest.NewGame()
-		g.AddPlayer("MOCK_PLAYER_1")
-		g.AddPlayer("MOCK_PLAYER_2")
+		g.AddPlayer("MOCK_PLAYER")
 		db.CreateGame(g)
 		log.Printf("created mock game %s", g.ID)
 	}
