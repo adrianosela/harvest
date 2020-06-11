@@ -5,16 +5,18 @@ services:
     ports:
       - 27017:27017
     environment:
+      - MONGO_REPLICA_SET_NAME=mock-rs
       - MONGO_INITDB_DATABASE=mock-db
     volumes:
-      - ./.mongo-seed.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./.mongo-seed.js:/docker-entrypoint-initdb.d/init-mongo.js
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "mock-rs" ]
   harvest.adrianosela.com:
     image: harvest
     build: .
     ports:
       - 8080:80
     environment:
-      - MONGO_CONN_STR=mongodb://mock-user:mock-pwd@mongo.adrianosela.com:27017/mock-db
+      - MONGO_CONN_STR=mongodb://mock-user:mock-pwd@mongo.adrianosela.com:27017/mock-db?replicaSet=mock-rs
       - MONGO_DB_NAME=mock-db
     depends_on:
       - mongo.adrianosela.com
